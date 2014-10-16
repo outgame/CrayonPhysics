@@ -1,0 +1,77 @@
+.TH "core/level.h" 3 "Fri Mar 1 2013" "Crayon Physics A++" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+core/level.h \- 
+.PP
+Contains everything needed to load a level\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <chipmunk/chipmunk\&.h>\fP
+.br
+\fC#include <stdio\&.h>\fP
+.br
+\fC#include <stdlib\&.h>\fP
+.br
+\fC#include <string\&.h>\fP
+.br
+
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fBour_image\fP"
+.br
+.ti -1c
+.RI "struct \fBlevel\fP"
+.br
+.ti -1c
+.RI "struct \fBour_object\fP"
+.br
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef struct \fBour_image\fP \fBImage\fP"
+.br
+.ti -1c
+.RI "typedef struct \fBlevel\fP \fBLevel\fP"
+.br
+.ti -1c
+.RI "typedef struct \fBour_object\fP \fBObj\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBLevel\fP * \fBlevel_load\fP (cpSpace *sp, char *filename)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Contains everything needed to load a level\&. 
+
+
+.PP
+Definition in file \fBlevel\&.h\fP\&.
+.SH "Typedef Documentation"
+.PP 
+.SS "typedef struct \fBour_image\fP  \fBImage\fP"
+Packages the filename of an object, its initial position, x and y, and dimensions, width and height\&. 
+.SS "typedef struct \fBlevel\fP  \fBLevel\fP"
+Packages sound, pre-loaded images and a chipmunk space of bodies 
+.SS "typedef struct \fBour_object\fP  \fBObj\fP"
+Contains whatever arguments we decide constitute an 'object' 
+.SH "Function Documentation"
+.PP 
+.SS "\fBLevel\fP* level_load (cpSpace *sp, char *filename)"
+Returns a level struct containing everything needed to load 
+.PP
+Definition at line 12 of file level\&.c\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Crayon Physics A++ from the source code\&.

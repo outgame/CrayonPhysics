@@ -1,0 +1,33 @@
+Graphics Spec
+    Design - Sam Farid
+    Coder(s) -
+    Tester(s) -
+
+Overview
+    The graphics subsystem will be passed objects from the core and draw them to the gtk window.
+
+Flow
+    The way graphics interacts with the other subsystems is the following:
+At the beginning of the game, the core passes a level struct to graphics to initialize a level.
+While the user is interacting with the GUI, the core passes cpSpace pointers to graphics to display in the window.
+
+Details
+    When a level is chosen, the graphics subsystem loads a level struct that contains image files, sound files, and a chipmunk space with all of the default bodies present in the level. As the user interacts with the GUI, the updated space is passed from core to graphics. The graphics iterates through the shapes in the bodies and displays them in the window.
+
+Future Updates
+    For projects past just the boxdrop, more functions will be needed. First, if the struct level from the core does contain a sound file, there will need to be a function in graphics that calls a separate library to load in the sound.
+    Second, when there are going to be images loaded into the background, as well as sleeping objects and static objects, there should be an update to display_space() that makes sure to draw the shapes in the correct order (for example so the sun is behind whatever the user is drawing).
+    Third, as a more flair-y part of the project, there should be a function that draws the cpShapes with a crayon stroke. This will probably involve drawing random little circles along the shape, but that could be a problem if the shape ends up looking like it's buzzing.
+    Fourth, I should probably make this funnier like Joel on Software said because otherwise no one will read it. And I can't put pictures in texts files so eventually this could be an html format.
+
+Functions
+    void graphics_level_load( const struct level *lvl )
+Loads the image and sound files specified in the level struct to the window. Then it calls display_space() to load the preset bodies in the level.
+
+    void graphics_space_display( const cpSpace *space )
+Iterates over the bodies in the space and calls convert_coordinate() on the vertices of each shape to change the body from chipmunk to gtk coordinates. Reads the data field of each body to set the color used, and then draws each shape in the gtk coordinate system.
+
+    static void graphics_draw_com( const cpBody *body )
+This will likely only be used during testing but this will be called by display_space() and will draw a dot at the center of mass of the body (stored in cpBodyGetPos()).
+
+

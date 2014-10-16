@@ -1,0 +1,109 @@
+.TH "graphics/stableGraphics.c" 3 "Fri Mar 1 2013" "Crayon Physics A++" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+graphics/stableGraphics.c \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include '\&.\&./gui/gui\&.h'\fP
+.br
+\fC#include 'graphics\&.h'\fP
+.br
+\fC#include '\&.\&./core/physics\&.h'\fP
+.br
+\fC#include <stdlib\&.h>\fP
+.br
+\fC#include <stdio\&.h>\fP
+.br
+
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fBrgb_value\fP"
+.br
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef struct \fBrgb_value\fP \fBRGB\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBeach_body\fP (cpBody *body, cairo_t *cr)"
+.br
+.ti -1c
+.RI "static void \fBeach_shape\fP (cpBody *body, cpShape *shape, cairo_t *cr)"
+.br
+.ti -1c
+.RI "static double \fBget_color\fP (long *pLval)"
+.br
+.ti -1c
+.RI "static void \fBrgb_from_int\fP (long lVal, \fBRGB\fP *col)"
+.br
+.ti -1c
+.RI "static void \fBdraw_static_body\fP (cairo_t *cr, cpSpace *space)"
+.br
+.ti -1c
+.RI "void \fBgraphics_space_display\fP (GtkWidget *widget, cairo_t *cr, cpSpace *space)"
+.br
+.ti -1c
+.RI "void \fBgraphics_level_load\fP (\fBLevel\fP *lvl)"
+.br
+.ti -1c
+.RI "void \fBgraphics_draw_com\fP (cpBody *body, cairo_t *cr)"
+.br
+.in -1c
+.SH "Typedef Documentation"
+.PP 
+.SS "typedef struct \fBrgb_value\fP  \fBRGB\fP"
+
+.SH "Function Documentation"
+.PP 
+.SS "static void draw_static_body (cairo_t *cr, cpSpace *space)\fC [static]\fP"
+
+.PP
+Definition at line 48 of file stableGraphics\&.c\&.
+.SS "static void each_body (cpBody *body, cairo_t *cr)\fC [static]\fP"
+To be called in space_display as cpSpaceEachBody(space, (cpSpaceBodyIteratorFunc) each_body, cr) Center of Mass is the reference point for all vertices
+.PP
+Definition at line 81 of file stableGraphics\&.c\&.
+.SS "static void each_shape (cpBody *body, cpShape *shape, cairo_t *cr)\fC [static]\fP"
+To be called in each_body as cpBodyEachShape(body, (cpBodyShapeIteratorFunc) each_shape, cr) 
+.PP
+Definition at line 128 of file stableGraphics\&.c\&.
+.SS "static double get_color (long *pLval)\fC [static]\fP"
+
+.PP
+Definition at line 180 of file stableGraphics\&.c\&.
+.SS "void graphics_draw_com (cpBody *body, cairo_t *cr)"
+Draws a dot at the center of mass of a body by calling cpBodyGetPos() Used for testing purposes to make sure the origin of the body is in the right place
+.PP
+\fBParameters:\fP
+.RS 4
+\fIchipmunk\fP body 
+.RE
+.PP
+
+.PP
+Definition at line 66 of file stableGraphics\&.c\&.
+.SS "void graphics_level_load (\fBLevel\fP *lvl)"
+
+.PP
+Definition at line 62 of file stableGraphics\&.c\&.
+.SS "void graphics_space_display (GtkWidget *widget, cairo_t *cr, cpSpace *space)"
+
+.PP
+Definition at line 22 of file stableGraphics\&.c\&.
+.SS "static void rgb_from_int (longlVal, \fBRGB\fP *col)\fC [static]\fP"
+Decodes a long (at least 32 bits with the last 32 bits being a byte each for a, r, g, b) to an rgb value 
+.PP
+Definition at line 172 of file stableGraphics\&.c\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Crayon Physics A++ from the source code\&.

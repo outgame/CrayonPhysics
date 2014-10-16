@@ -1,0 +1,43 @@
+.TH "core/level.c" 3 "Fri Mar 1 2013" "Crayon Physics A++" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+core/level.c \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'level\&.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBImage\fP * \fBimage_parse\fP (char *imagestring)"
+.br
+.ti -1c
+.RI "\fBLevel\fP * \fBlevel_load\fP (cpSpace *sp, char *filename)"
+.br
+.ti -1c
+.RI "static \fBObj\fP * \fBobj_parse\fP (char *objstring)"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "static \fBImage\fP * image_parse (char *imagestring)\fC [static]\fP"
+Loads up a given level file and adds objects to the given space sp accordingly\&.
+.PP
+First, level_load finds the first list within the JSON object, then it takes in the string representing the list of images of the form '['FILENAME', pos_x, pos_y, width, height],\&.\&.\&.,['FILENAME', pos_x, pos_y, width, height]' and passes each []-enclosed section to image_parse\&. Similarly, it then calls \fBobj_parse()\fP on each member of the list of objects in 'dictionary' form: '{'Type':'[]','Args':'[]"} and then save the soundfile as a string\&. Then wrap everything into a Level and return a pointer to that struct\&. 
+.PP
+Definition at line 34 of file level\&.c\&.
+.SS "\fBLevel\fP* level_load (cpSpace *sp, char *filename)"
+Returns a level struct containing everything needed to load 
+.PP
+Definition at line 12 of file level\&.c\&.
+.SS "static \fBObj\fP* obj_parse (char *objstring)\fC [static]\fP"
+
+.PP
+Definition at line 44 of file level\&.c\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Crayon Physics A++ from the source code\&.

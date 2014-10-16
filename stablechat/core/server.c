@@ -1,0 +1,323 @@
+// chat server using Beej's guide code as an example
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+#include <sys/time.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+
+#define TRUE 1
+#define ERROR -1
+
+#define LISTENQ 8
+#define MAXLINE 256
+#define SEPARATE ','
+
+#define TIMEOUT_SEC 200
+#define TIMEOUT_USEC 0
+
+/**
+ * Called by main to run the whole server
+ * Sets up a listener, and uses select to accept connections or data from sockets
+ *
+ * @return EXIT_SUCCESS if select times out
+ */
+static int server_start();
+
+/**
+ * Gets the sockaddr in IPv4 or IPv6
+ *
+ * @param struct sockaddr *sa the sockaddr of which you want to get the address
+ */
+static void *get_in_addr(struct sockaddr *sa);
+
+/**
+ * Sets up the listener using more general specifications - more reliable
+ * Binds the socket and returns the file descriptor
+ * 
+ * @param char* server port number
+ * @return socket file descriptor on success, or -1 on an error
+ */
+static int server_listen_tcp_local(char* server_port);
+
+/**
+ * Accepts a new connection from a socket
+ * 
+ * @param int listener the file descriptor of the listener itself
+ * @param int connfd the file descriptor that just received the connection
+ * @return int file descriptor of the new socket
+ */
+static int server_accept(int listener, int connfd);
+
+/**
+ * Receives data from a socket, and sends it to all of the other sockets except
+ * the listener
+ * Removes the file descriptor from the master set if there is a disconnection
+ *
+ * @param fd_set master that holds all of the current file descriptors
+ * @param int listener the file descriptor of the listener itself
+ * @param int connfd the file descriptor that just received the connection
+ * @param int* fdmax pointer to the highest number file descriptor in master
+ * @return updated fd_set with the file descriptor of the new socket
+ */
+static fd_set server_recv_send(fd_set master, int listener, int connfd, int fdmax);
+
+static int level_send_all(int sockfd);
+static int server_encode(char *buf, const int *level, int type);
+
+
+int main(int argc, char **argv) {
+    return server_start();
+}
+
+
+static int server_start() {
+    // master file descriptor list, temp fd list for select()
+    fd_set master, read_fds;
+    
+    FD_ZERO(&master); // clear the master and temp sets
+    FD_ZERO(&read_fds);
+    
+    int fdmax; // maximum file descriptor number
+    
+    // set timeout for select
+    struct timeval wait;
+    wait.tv_sec = TIMEOUT_SEC;
+    wait.tv_usec = TIMEOUT_USEC;
+    int sel;
+    
+    // set up the listener
+    int listener = server_listen_tcp_local("5993");
+    if (listener < 0)
+        return EXIT_FAILURE;
+
+    // add listener to list of file descriptors because accept is blocking
+    FD_SET(listener, &master);
+    fdmax = listener; //listener is the largest file descriptor right now
+    
+    int SEND = TRUE;
+    
+    printf("waiting to accept a socket connection request...\n");
+    
+    while (TRUE) {
+	// copy master list
+        read_fds = master;
+	
+	sel = select(fdmax+1, &read_fds, NULL, NULL, &wait);
+
+        if (sel == -1) {
+            fprintf(stderr, "select failed\n");
+            return EXIT_FAILURE;
+        }
+	else if (sel == 0) {
+	    printf("select timed out\n");
+            break;
+	}
+	
+        // loop through sockets
+        for(int connfd = 0; connfd <= fdmax; connfd++) {
+	  //fprintf(stdout, "%d. Looping over sockets\n", connfd);
+            if ( FD_ISSET(connfd, &read_fds) ) {
+		// socket is the listener, accept the new connection
+                if (connfd == listener) {
+		    int newfd;
+		    
+		    if ( (newfd = server_accept(listener, connfd)) != -1) {
+			FD_SET(newfd, &master);
+			
+			if (newfd > fdmax)  // update the greatest fd
+			    fdmax = newfd;
+		    }
+		    else {
+			fprintf(stderr, "accept failed\n");
+		    }
+		    
+		    if (SEND) {
+			if (level_send_all(newfd) == -1)
+			    fprintf(stderr, "sending level failed\n");
+		    }
+		    
+                }
+                
+		// socket is a client
+                else {
+		  //fprintf(stdout, "SENDING");
+		    master = server_recv_send(master, listener, connfd, fdmax);
+                }
+		
+            }
+        }
+	
+    }
+    return EXIT_SUCCESS;
+}
+
+static void *get_in_addr(struct sockaddr *sa) {
+    
+    if (sa->sa_family == AF_INET)
+	return &(( (struct sockaddr_in*) sa)->sin_addr);
+    
+    return &(( (struct sockaddr_in6*)sa )->sin6_addr);
+}
+
+static int server_listen_tcp_local(char *server_port) {
+    struct addrinfo hints, *ai, *p;
+    
+    // get a socket and bind it
+    memset(&hints, 0, sizeof hints);
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags = AI_PASSIVE;
+    
+    if (getaddrinfo(NULL, server_port, &hints, &ai) != 0) {
+        fprintf(stderr, "selectserver getaddrinfo\n");
+        return ERROR;
+    }
+    
+    int listenfd, yes = 1;
+    for(p = ai; p != NULL; p = p->ai_next) {
+        listenfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
+        if (listenfd < 0) { 
+            continue;
+        }
+        
+        setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
+        
+        if (bind(listenfd, p->ai_addr, p->ai_addrlen) < 0) {
+	    close(listenfd);
+	    continue;
+	}
+	
+	break;
+    }
+
+    if (p == NULL) { // socket didn't bind
+            fprintf(stderr, "selectserver: failed to bind\n");
+            return ERROR;
+    }
+    
+    freeaddrinfo(ai);
+    
+    if (listen(listenfd, LISTENQ) == -1) {
+        fprintf(stderr, "listen failed\n");
+        return ERROR;
+    }
+    
+    return listenfd;
+}
+
+static int server_accept(int listener, int connfd) {
+    struct sockaddr_storage remoteaddr; // client address
+    socklen_t addrlen = sizeof remoteaddr;
+    
+    char remoteIP[INET6_ADDRSTRLEN];
+    
+    int newfd = accept(listener, (struct sockaddr*) &remoteaddr, &addrlen);
+    
+    if (newfd != -1) {
+	// if it didn't fail, print the connection and return the new fd
+	printf("new connection from %s on socket %d\n",
+	    inet_ntop(remoteaddr.ss_family,
+	    get_in_addr((struct sockaddr*) &remoteaddr), remoteIP, INET6_ADDRSTRLEN),
+	    newfd);
+    }
+    
+    return newfd;
+}
+
+static fd_set server_recv_send(fd_set master, int listener, int connfd, int fdmax) {
+    char buf[MAXLINE]; // buffer for client data
+    int nbytes;
+    
+    // receive the data
+    if ((nbytes = recv(connfd, buf, sizeof(buf), 0)) <= 0) {
+	
+	if (nbytes == 0) // client closed the connection
+	    printf("socket %d hung up\n", connfd);
+	else
+	    fprintf(stderr, "recv failed\n");
+	
+	close(connfd);
+	FD_CLR(connfd, &master); // remove from master set
+    }
+    
+    else { // actual data came from the client
+      //fprintf(stdout, "%d\n", nbytes);
+      fflush(stdout);
+	for(int otherfd = 0; otherfd <= fdmax; otherfd++) {
+	    if (FD_ISSET(otherfd, &master)) {
+		
+		// send to all connections except listener
+		if (otherfd != listener) {
+		    if ( send( otherfd, buf, nbytes, 0 ) == -1 )
+			fprintf(stderr, "send failed\n");
+		    
+		    //printf(getpeername(), inet_ntop(), getnameinfo(), or gethostbyaddr())
+		}
+	    }
+	}
+    }
+    
+    return master;
+}
+
+static int level_send_all(int sockfd) {
+    int statics[] = {45, 0,0,0,500, 750,0,750,500, 100,10,200,10, 250,210,200,10, 100,10,50,210, 250,210,325,190, 750,210,500,10, 325,190,400,10, 350,250,675,325, 350,450,100,333, 350,450,475,392};
+    
+    char lv[ (statics[0] * 4) + 1 ];
+    lv[0] = '\0';
+    int lvbytes = server_encode(lv, statics, -128);
+    
+    if (send( sockfd, lv, lvbytes, 0 ) == -1)
+	return ERROR;
+    
+    sleep(3);
+    
+    int box[] = {17, 150,100,150,150, 150,150,200,150, 200,150,200,100, 200,100,150,100};
+    char bx[ (box[0] * 5) + 1 ];
+    bx[0] = '\0';
+    int bxbytes = server_encode(bx, box, -121);
+    
+    if (send( sockfd, bx, bxbytes, 0 ) == -1)
+        return ERROR;
+    
+    sleep(3);
+    
+    int box2[] = {17, 350,850,350,900, 350,900,400,900, 400,900,400,850, 400,850,350,850};
+    char bx2[ (box2[0] * 5) + 1 ];
+    bx2[0] = '\0';
+    bxbytes = server_encode(bx2, box2, -121);
+    
+    if (send( sockfd, bx2, bxbytes, 0 ) == -1)
+	return ERROR;
+    
+    sleep(3);
+    
+    int box2[] = {17, 350,850,350,900, 350,900,400,900, 400,900,400,850, 400,850,350,850};
+    char bx2[ (box2[0] * 5) + 1 ];
+    bx2[0] = '\0';
+    bxbytes = server_encode(bx2, box2, -121);
+    
+    if (send( sockfd, bx2, bxbytes, 0 ) == -1)
+	return ERROR;
+    
+    return 1;
+}
+
+static int server_encode(char *buf, const int *level, int type) { 
+    char form[12]; // largest possible int, plus a char and \0
+    char first[] = {(char) type, '\0'};
+    strcat(buf, first);
+    
+    for (int index = 0; index < level[0]; index++) {
+        sprintf(form, "%d%c", level[index], SEPARATE);
+        strcat(buf, form);
+    }
+    
+    return strlen(buf);
+}

@@ -1,0 +1,152 @@
+.TH "core/physics.c" 3 "Fri Mar 1 2013" "Crayon Physics A++" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+core/physics.c \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'physics\&.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "static cpBody * \fBadd_segment_to_body\fP (cpSpace *space, cpBody *drawing)"
+.br
+.ti -1c
+.RI "static cpBody * \fButils_update_drawing\fP (cpBody *drawing)"
+.br
+.ti -1c
+.RI "static \fBBody_data\fP * \fBshift_origin\fP (cpBody *body, cpVect old_origin, cpVect new_origin)"
+.br
+.ti -1c
+.RI "static \fBBody_data\fP * \fBpoint_array_new\fP (cpFloat x, cpFloat y, long color_rgb)"
+.br
+.ti -1c
+.RI "static void \fBpoint_array_free\fP (\fBBody_data\fP *pa)"
+.br
+.ti -1c
+.RI "static void \fBfree_shape\fP (cpBody *body, cpShape *shape, void *data)"
+.br
+.ti -1c
+.RI "static void \fBpoint_array_free_arrays\fP (\fBBody_data\fP *pa)"
+.br
+.ti -1c
+.RI "static void \fBpost_step_body_replace_shapes\fP (cpSpace *space, cpBody *body, void *data)"
+.br
+.ti -1c
+.RI "cpBody * \fBdrawing_new\fP (cpFloat x, cpFloat y, long color_rgb)"
+.br
+.ti -1c
+.RI "cpBody * \fBdrawing_update\fP (cpSpace *space, cpBody *drawing, cpFloat x, cpFloat y)"
+.br
+.ti -1c
+.RI "void \fBdrawing_activate\fP (cpSpace *space, cpBody *drawing)"
+.br
+.ti -1c
+.RI "void \fBfree_body_full\fP (cpBody *body)"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "static cpBody * add_segment_to_body (cpSpace *space, cpBody *drawing)\fC [static]\fP"
+
+.PP
+Definition at line 144 of file physics\&.c\&.
+.SS "void drawing_activate (cpSpace *space, cpBody *drawing)"
+On mouse release Unsleeps the cpBody so that it will begin to interact with the space Also frees the GArrays in the UserData of the body but keeps color_rgb because the arrays won't be used anymore but the color still needs to be drawm
+.PP
+\fBParameters:\fP
+.RS 4
+\fIcpBody\fP *drawing to be activated when it is done being drawn 
+.RE
+.PP
+
+.PP
+Definition at line 162 of file physics\&.c\&.
+.SS "cpBody* drawing_new (cpFloatx, cpFloaty, longcolor_rgb)"
+On mouse press Starts the drawing by creating a cpBody Calls the constructor for a Point_array and stores it in the UserData parameter for the cpBody Initializes the Point_array with the coordinates and the color
+.PP
+\fBParameters:\fP
+.RS 4
+\fIint\fP x value in world coordinates (not mouse coordinates) 
+.br
+\fIint\fP y value 
+.br
+\fIlong\fP color_rgb that stores an ARGB value in 32 bits
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+cpBody* with a Point_array in the UserData 
+.RE
+.PP
+
+.PP
+Definition at line 100 of file physics\&.c\&.
+.SS "cpBody* drawing_update (cpSpace *space, cpBody *drawing, cpFloatx, cpFloaty)"
+On mouse drag Adds a new segment to the drawing if the mouse has been dragged past THRESHOLD Creates a new cpShape to add to the body Updates mass, moment, and center of mass of the body
+.PP
+\fBParameters:\fP
+.RS 4
+\fIcpSpace\fP *space that is holding the body 
+.br
+\fIcpBody\fP *drawing to be updated 
+.br
+\fIint\fP x value in world coordinates 
+.br
+\fIint\fP y value
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+cpBody* that has an added segment and updated properties 
+.RE
+.PP
+
+.PP
+Definition at line 113 of file physics\&.c\&.
+.SS "void free_body_full (cpBody *body)"
+Frees the body and all of its shapes Also frees the Point_array in the user data
+.PP
+\fBParameters:\fP
+.RS 4
+\fIcpBody\fP *body to be freed 
+.RE
+.PP
+
+.PP
+Definition at line 283 of file physics\&.c\&.
+.SS "static void free_shape (cpBody *body, cpShape *shape, void *data)\fC [static]\fP"
+
+.PP
+Definition at line 293 of file physics\&.c\&.
+.SS "void point_array_free (\fBBody_data\fP *pa)\fC [static]\fP"
+
+.PP
+Definition at line 91 of file physics\&.c\&.
+.SS "static void point_array_free_arrays (\fBBody_data\fP *pa)\fC [static]\fP"
+
+.PP
+Definition at line 95 of file physics\&.c\&.
+.SS "\fBBody_data\fP * point_array_new (cpFloatx, cpFloaty, longcolor_rgb)\fC [static]\fP"
+
+.PP
+Definition at line 77 of file physics\&.c\&.
+.SS "static void post_step_body_replace_shapes (cpSpace *space, cpBody *body, void *data)\fC [static]\fP"
+
+.PP
+Definition at line 256 of file physics\&.c\&.
+.SS "static \fBBody_data\fP * shift_origin (cpBody *body, cpVectold_origin, cpVectnew_origin)\fC [static]\fP"
+
+.PP
+Definition at line 226 of file physics\&.c\&.
+.SS "static cpBody * utils_update_drawing (cpBody *drawing)\fC [static]\fP"
+
+.PP
+Definition at line 174 of file physics\&.c\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Crayon Physics A++ from the source code\&.

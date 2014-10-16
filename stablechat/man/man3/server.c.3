@@ -1,0 +1,55 @@
+.TH "core/server.c" 3 "Fri Mar 1 2013" "Crayon Physics A++" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+core/server.c \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'server\&.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "int \fBserver_start\fP ()"
+.br
+.ti -1c
+.RI "void * \fBget_in_addr\fP (struct sockaddr *sa)"
+.br
+.ti -1c
+.RI "int \fBserver_listen_tcp\fP (int server_port)"
+.br
+.ti -1c
+.RI "fd_set \fBserver_accept\fP (fd_set master, int listener, int connfd, int *fdmax)"
+.br
+.ti -1c
+.RI "fd_set \fBserver_recv_send\fP (fd_set master, int listener, int connfd, int fdmax)"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "void* get_in_addr (struct sockaddr *sa)"
+
+.PP
+Definition at line 73 of file server\&.c\&.
+.SS "fd_set server_accept (fd_setmaster, intlistener, intconnfd, int *fdmax)"
+
+.PP
+Definition at line 151 of file server\&.c\&.
+.SS "int server_listen_tcp (intserver_port)"
+
+.PP
+Definition at line 81 of file server\&.c\&.
+.SS "fd_set server_recv_send (fd_setmaster, intlistener, intconnfd, intfdmax)"
+
+.PP
+Definition at line 177 of file server\&.c\&.
+.SS "int server_start ()"
+
+.PP
+Definition at line 10 of file server\&.c\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Crayon Physics A++ from the source code\&.

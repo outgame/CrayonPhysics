@@ -1,0 +1,46 @@
+.TH "level" 3 "Fri Mar 1 2013" "Crayon Physics A++" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+level \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <level\&.h>\fP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "\fBImage\fP * \fBimages\fP"
+.br
+.ti -1c
+.RI "cpSpace * \fBsp\fP"
+.br
+.ti -1c
+.RI "char * \fBsoundfile\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Packages sound, pre-loaded images and a chipmunk space of bodies 
+.PP
+Definition at line 30 of file level\&.h\&.
+.SH "Field Documentation"
+.PP 
+.SS "\fBImage\fP* level::images"
+
+.PP
+Definition at line 31 of file level\&.h\&.
+.SS "char* level::soundfile"
+
+.PP
+Definition at line 33 of file level\&.h\&.
+.SS "cpSpace* level::sp"
+
+.PP
+Definition at line 32 of file level\&.h\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Crayon Physics A++ from the source code\&.

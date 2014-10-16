@@ -1,0 +1,84 @@
+.TH "gui/gui2.c" 3 "Fri Mar 1 2013" "Crayon Physics A++" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+gui/gui2.c \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'gui\&.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "int \fBinitialize_window\fP (\fBGui\fP *\fBgui\fP)"
+.br
+.ti -1c
+.RI "int \fBinitialize_menu\fP (GtkWidget *grid)"
+.br
+.ti -1c
+.RI "int \fBinitialize_draw_area\fP (GtkWidget *grid, GtkWidget *draw_area)"
+.br
+.ti -1c
+.RI "int \fBconnect_signals\fP (\fBGui\fP *\fBgui\fP)"
+.br
+.ti -1c
+.RI "static gboolean \fBdraw_cb\fP (GtkWidget *draw_area, cairo_t *cr, \fBGui\fP *\fBgui\fP)"
+.br
+.ti -1c
+.RI "static gboolean \fBtime_handler\fP (\fBGui\fP *\fBgui\fP)"
+.br
+.ti -1c
+.RI "static gboolean \fBbutton_press_event_cb\fP (GtkWidget *widget, GdkEventButton *event, \fBGui\fP *\fBgui\fP)"
+.br
+.ti -1c
+.RI "static gboolean \fBbutton_release_event_cb\fP (GtkWidget *widget, GdkEventButton *event, \fBGui\fP *\fBgui\fP)"
+.br
+.ti -1c
+.RI "static gboolean \fBmotion_notify_event_cb\fP (GtkWidget *widget, GdkEventMotion *event, \fBGui\fP *\fBgui\fP)"
+.br
+.ti -1c
+.RI "int \fBmain\fP (int argc, char *argv[])"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "static gboolean button_press_event_cb (GtkWidget *widget, GdkEventButton *event, \fBGui\fP *gui)\fC [static]\fP"
+
+.PP
+Definition at line 178 of file gui2\&.c\&.
+.SS "static gboolean button_release_event_cb (GtkWidget *widget, GdkEventButton *event, \fBGui\fP *gui)\fC [static]\fP"
+
+.PP
+Definition at line 195 of file gui2\&.c\&.
+.SS "int connect_signals (\fBGui\fP *gui)"
+
+.SS "static gboolean draw_cb (GtkWidget *draw_area, cairo_t *cr, \fBGui\fP *gui)\fC [static]\fP"
+
+.PP
+Definition at line 155 of file gui2\&.c\&.
+.SS "int initialize_draw_area (GtkWidget *grid, GtkWidget *draw_area)"
+
+.SS "int initialize_menu (GtkWidget *grid)"
+
+.PP
+Definition at line 62 of file gui2\&.c\&.
+.SS "int initialize_window (\fBGui\fP *gui)"
+
+.SS "int main (intargc, char *argv[])"
+
+.PP
+Definition at line 13 of file gui2\&.c\&.
+.SS "static gboolean motion_notify_event_cb (GtkWidget *widget, GdkEventMotion *event, \fBGui\fP *gui)\fC [static]\fP"
+
+.PP
+Definition at line 206 of file gui2\&.c\&.
+.SS "static gboolean time_handler (\fBGui\fP *gui)\fC [static]\fP"
+
+.PP
+Definition at line 169 of file gui2\&.c\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Crayon Physics A++ from the source code\&.

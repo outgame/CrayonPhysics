@@ -1,0 +1,46 @@
+.TH "body_data" 3 "Fri Mar 1 2013" "Crayon Physics A++" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+body_data \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <core\&.h>\fP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "GArray * \fBx_values\fP"
+.br
+.ti -1c
+.RI "GArray * \fBy_values\fP"
+.br
+.ti -1c
+.RI "long \fBcolor_rgb\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This struct holds everything needed in the preparation and storage of a cpBody\&. It will contain a 'point array', two identically-indexed arrays of x- and y-values for the vertices, but only during creation\&. After creation, it maintains the color of the body for graphics\&. 
+.PP
+Definition at line 36 of file core\&.h\&.
+.SH "Field Documentation"
+.PP 
+.SS "long body_data::color_rgb"
+
+.PP
+Definition at line 38 of file core\&.h\&.
+.SS "GArray * body_data::x_values"
+
+.PP
+Definition at line 37 of file core\&.h\&.
+.SS "GArray * body_data::y_values"
+
+.PP
+Definition at line 37 of file core\&.h\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Crayon Physics A++ from the source code\&.

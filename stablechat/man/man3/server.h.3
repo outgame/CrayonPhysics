@@ -1,0 +1,121 @@
+.TH "core/server.h" 3 "Fri Mar 1 2013" "Crayon Physics A++" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+core/server.h \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <stdio\&.h>\fP
+.br
+\fC#include <stdlib\&.h>\fP
+.br
+\fC#include <string\&.h>\fP
+.br
+\fC#include <unistd\&.h>\fP
+.br
+\fC#include <sys/time\&.h>\fP
+.br
+\fC#include <sys/types\&.h>\fP
+.br
+\fC#include <sys/socket\&.h>\fP
+.br
+\fC#include <netinet/in\&.h>\fP
+.br
+\fC#include <arpa/inet\&.h>\fP
+.br
+\fC#include <netdb\&.h>\fP
+.br
+
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBTRUE\fP   1"
+.br
+.ti -1c
+.RI "#define \fBERROR\fP   -1"
+.br
+.ti -1c
+.RI "#define \fBLISTENQ\fP   8"
+.br
+.ti -1c
+.RI "#define \fBMAXLINE\fP   256"
+.br
+.ti -1c
+.RI "#define \fBTIMEOUT_SEC\fP   1000"
+.br
+.ti -1c
+.RI "#define \fBTIMEOUT_USEC\fP   0"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "int \fBserver_start\fP ()"
+.br
+.ti -1c
+.RI "void * \fBget_in_addr\fP (struct sockaddr *sa)"
+.br
+.ti -1c
+.RI "int \fBserver_listen_tcp\fP (int server_port)"
+.br
+.ti -1c
+.RI "fd_set \fBserver_accept\fP (fd_set master, int listener, int connfd, int *fdmax)"
+.br
+.ti -1c
+.RI "fd_set \fBserver_recv_send\fP (fd_set master, int listener, int connfd, int fdmax)"
+.br
+.in -1c
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define ERROR   -1"
+
+.PP
+Definition at line 17 of file server\&.h\&.
+.SS "#define LISTENQ   8"
+
+.PP
+Definition at line 19 of file server\&.h\&.
+.SS "#define MAXLINE   256"
+
+.PP
+Definition at line 20 of file server\&.h\&.
+.SS "#define TIMEOUT_SEC   1000"
+
+.PP
+Definition at line 22 of file server\&.h\&.
+.SS "#define TIMEOUT_USEC   0"
+
+.PP
+Definition at line 23 of file server\&.h\&.
+.SS "#define TRUE   1"
+
+.PP
+Definition at line 16 of file server\&.h\&.
+.SH "Function Documentation"
+.PP 
+.SS "void* get_in_addr (struct sockaddr *sa)"
+
+.PP
+Definition at line 73 of file server\&.c\&.
+.SS "fd_set server_accept (fd_setmaster, intlistener, intconnfd, int *fdmax)"
+
+.PP
+Definition at line 151 of file server\&.c\&.
+.SS "int server_listen_tcp (intserver_port)"
+
+.PP
+Definition at line 81 of file server\&.c\&.
+.SS "fd_set server_recv_send (fd_setmaster, intlistener, intconnfd, intfdmax)"
+
+.PP
+Definition at line 177 of file server\&.c\&.
+.SS "int server_start ()"
+
+.PP
+Definition at line 10 of file server\&.c\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Crayon Physics A++ from the source code\&.

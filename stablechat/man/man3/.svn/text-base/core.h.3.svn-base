@@ -1,0 +1,165 @@
+.TH "core/core.h" 3 "Fri Mar 1 2013" "Crayon Physics A++" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+core/core.h \- 
+.PP
+Central physics interface with Chipmunk library\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <chipmunk\&.h>\fP
+.br
+\fC#include <gtk/gtk\&.h>\fP
+.br
+
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fBbody_data\fP"
+.br
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBTHRESHOLD\fP   \&.02"
+.br
+.ti -1c
+.RI "#define \fBINITIAL\fP   0\&.000001"
+.br
+.ti -1c
+.RI "#define \fBSCALE\fP   100"
+.br
+.ti -1c
+.RI "#define \fBCRAYON_MASS\fP   \&.5"
+.br
+.ti -1c
+.RI "#define \fBCRAYON_FRICTION\fP   0\&.3"
+.br
+.ti -1c
+.RI "#define \fBCRAYON_RADIUS\fP   0\&.04"
+.br
+.ti -1c
+.RI "#define \fBCRAYON_ELASTICITY\fP   \&.5"
+.br
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef struct \fBbody_data\fP \fBBody_data\fP"
+.br
+.ti -1c
+.RI "typedef struct \fBshape_data\fP \fBShape_data\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "cpBody * \fBdrawing_update\fP (cpSpace *space, cpBody *drawing, cpFloat x, cpFloat y)"
+.br
+.ti -1c
+.RI "void \fBdrawing_activate\fP (cpSpace *space, cpBody *drawing)"
+.br
+.ti -1c
+.RI "void \fBfree_body_full\fP (cpBody *body)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Central physics interface with Chipmunk library\&. 
+
+Core\&.h is visible only to files requiring communication with chipmunk and its structures like cpBody, cpShape and cpSpace\&. This includes both 1-player graphics and the server-side for multiplayer\&. 
+.PP
+Definition in file \fBcore\&.h\fP\&.
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define CRAYON_ELASTICITY   \&.5"
+
+.PP
+Definition at line 28 of file core\&.h\&.
+.SS "#define CRAYON_FRICTION   0\&.3"
+
+.PP
+Definition at line 26 of file core\&.h\&.
+.SS "#define CRAYON_MASS   \&.5"
+CRAYON_ constants are used as standards for the entire gameworld 
+.PP
+Definition at line 25 of file core\&.h\&.
+.SS "#define CRAYON_RADIUS   0\&.04"
+
+.PP
+Definition at line 27 of file core\&.h\&.
+.SS "#define INITIAL   0\&.000001"
+Because chipmunk does not allow 0 for many fields 
+.PP
+Definition at line 20 of file core\&.h\&.
+.SS "#define SCALE   100"
+Pixels per meter 
+.PP
+Definition at line 22 of file core\&.h\&.
+.SS "#define THRESHOLD   \&.02"
+Should stay between \&.01 and \&.25, in meters (Square distance) 
+.PP
+Definition at line 18 of file core\&.h\&.
+.SH "Typedef Documentation"
+.PP 
+.SS "typedef struct \fBbody_data\fP  \fBBody_data\fP"
+This struct holds everything needed in the preparation and storage of a cpBody\&. It will contain a 'point array', two identically-indexed arrays of x- and y-values for the vertices, but only during creation\&. After creation, it maintains the color of the body for graphics\&. 
+.SS "typedef struct \fBshape_data\fP \fBShape_data\fP"
+
+.PP
+Definition at line 41 of file core\&.h\&.
+.SH "Function Documentation"
+.PP 
+.SS "void drawing_activate (cpSpace *space, cpBody *drawing)"
+On mouse release Unsleeps the cpBody so that it will begin to interact with the space Also frees the GArrays in the UserData of the body but keeps color_rgb because the arrays won't be used anymore but the color still needs to be drawm
+.PP
+\fBParameters:\fP
+.RS 4
+\fIcpBody\fP *drawing to be activated when it is done being drawn 
+.RE
+.PP
+
+.PP
+Definition at line 162 of file physics\&.c\&.
+.SS "cpBody* drawing_update (cpSpace *space, cpBody *drawing, cpFloatx, cpFloaty)"
+On mouse drag Adds a new segment to the drawing if the mouse has been dragged past THRESHOLD Creates a new cpShape to add to the body Updates mass, moment, and center of mass of the body
+.PP
+\fBParameters:\fP
+.RS 4
+\fIcpSpace\fP *space that is holding the body 
+.br
+\fIcpBody\fP *drawing to be updated 
+.br
+\fIint\fP x value in world coordinates 
+.br
+\fIint\fP y value
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+cpBody* that has an added segment and updated properties 
+.RE
+.PP
+
+.PP
+Definition at line 113 of file physics\&.c\&.
+.SS "void free_body_full (cpBody *body)"
+Frees the body and all of its shapes Also frees the Point_array in the user data
+.PP
+\fBParameters:\fP
+.RS 4
+\fIcpBody\fP *body to be freed 
+.RE
+.PP
+
+.PP
+Definition at line 283 of file physics\&.c\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Crayon Physics A++ from the source code\&.

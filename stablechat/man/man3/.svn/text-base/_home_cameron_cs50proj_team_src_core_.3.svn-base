@@ -1,0 +1,53 @@
+.TH "core/ Directory Reference" 3 "Fri Mar 1 2013" "Crayon Physics A++" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+core/ Directory Reference \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Files"
+
+.in +1c
+.ti -1c
+.RI "file \fBclient\&.c\fP"
+.br
+.ti -1c
+.RI "file \fBclient\&.h\fP"
+.br
+.ti -1c
+.RI "file \fBcore\&.h\fP"
+.br
+.RI "\fICentral physics interface with Chipmunk library\&. \fP"
+.ti -1c
+.RI "file \fBlevel\&.c\fP"
+.br
+.ti -1c
+.RI "file \fBlevel\&.h\fP"
+.br
+.RI "\fIContains everything needed to load a level\&. \fP"
+.ti -1c
+.RI "file \fBphysics\&.c\fP"
+.br
+.ti -1c
+.RI "file \fBphysics\&.h\fP"
+.br
+.ti -1c
+.RI "file \fBphysicsCLEAN\&.c\fP"
+.br
+.ti -1c
+.RI "file \fBphysicsSandbox\&.c\fP"
+.br
+.ti -1c
+.RI "file \fBserver\&.c\fP"
+.br
+.ti -1c
+.RI "file \fBserver\&.h\fP"
+.br
+.ti -1c
+.RI "file \fBstablePhysics\&.c\fP"
+.br
+.ti -1c
+.RI "file \fBtest\&.c\fP"
+.br
+.in -1c

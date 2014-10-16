@@ -1,0 +1,869 @@
+#include "gui.h"
+#include "../core/client.h"
+
+/**
+ *Function that initializes the graphics window
+ *@param gui The pointer to the gui for the client
+ *@return a boolean indicating the success of the function
+ */
+static gboolean initialize_window(Gui *gui);
+
+/**
+*Function that initializes the menu and snaps it into the proper location in the grid
+*@param grid The current grid in the display window
+*@param gui The pointer to the gui for the client
+*@return a boolean indicating the success of the function
+*/
+static gboolean initialize_menu(GtkWidget *grid, Gui *gui);
+
+/**
+ *Function that initializes the drawing area for graphics
+*@param grid The current grid in the display window
+*@param draw_area The pointer to the drawing area for the client
+*@return a boolean indicating the success of the function
+*/
+static gboolean initialize_draw_area(GtkWidget *grid, GtkWidget *draw_area);
+
+/**
+*Function that initializes the text entry for chat and snaps it into the proper location in the grid
+*@param grid The current grid in the display window
+*@param gui The pointer to the gui for the client
+*@return a boolean indicating the success of the function
+*/
+static gboolean initialize_text_entry(GtkWidget *grid, Gui *gui);
+
+/**
+*Function that initializes the text entry for chat and snaps it into the proper location in the grid
+*@param grid The current grid in the display window
+*@param gui The pointer to the gui for the client
+*@return a boolean indicating the success of the function
+*/
+static gboolean initialize_text_view(GtkWidget *grid, Gui *gui);
+
+/**
+ *Function that initializes the clients connection to the server
+ *@param gui The pointer to the gui for the client
+ *@param server A character pointer to a server name
+ *@param port_num A port number
+ *@return the file descriptor for the gui
+ */
+static int initialize_client(Gui *gui, const char *server, int port_num);
+
+/**
+ *Function that operates in a thread, that constantly is receiving information from the server
+ *@param ptr A void pointer to clients gui
+ */
+static void *client_recv1(void *ptr);
+
+/**
+ *Function that adds a string to the text display on the side of the window
+ *@param gui A pointer to the gui for the client
+ *@param s A gchar pointer to the string that is to be added
+ *@return a boolean indicating the success of the function
+ */
+static gboolean add_to_text(Gui *gui, gchar *s);
+
+/**
+ *Function that connects the signals to various gui buttons, menu items, etc
+ *@param gui THe pointer to the gui for the client
+ *@return a boolean indicating the success of the function
+ */
+static gboolean connect_signals(Gui *gui);
+
+/**
+ *Callback function that transmits data when the user clicks the send button
+ *@param widget a pointer to the widget that triggered the callback
+ *@param gui A pointer to the gui for the client
+ *@return a boolean indicating the success of the function
+ */
+static gboolean send_cb(GtkWidget *widget, Gui *gui);
+
+/**
+ *Callback function that updates the server connection
+ *@param widget a pointer to the widget that made the callback
+ *@param serv a pointer to a Server struct that holds the gui and two text entries
+ *@return a boolean indicating the success of the function
+ */
+static gboolean server_update_cb(GtkWidget *widget, Server *serv);
+
+/**
+ *Callback function that closes the server connect dialog
+ *@param widget a pointer to the widget that made the callback
+ *@param window a pointer to the GtkWindow
+ *@return a boolean indicating the success of the function
+ */
+static gboolean close_select_cb(GtkWidget *widget, GtkWidget *window);
+
+/**
+ *Callback function that calls the redraw functions
+ *@param draw_area a pointer to the GUI's draw area
+ *@param cr a pointer to a cairo instance
+ *@param gui a pointer to the gui for the client
+ *@return a boolean indicating the success of the function
+ */
+static gboolean draw_cb(GtkWidget *draw_area, cairo_t *cr, Gui *gui);     
+
+/**
+ *Function that updates the gui at each timer tick
+ *@param gui a pointer to the gui for the client
+ *@return a boolean indicating the success of the function
+ */
+static gboolean time_handler(Gui *gui); 
+
+/**
+ *Callback function that responds to a mouse click in the draw_area
+ *@param widget A pointer to the widget that triggered the callback
+ *@param event A pointer to the mouse event
+ *@param gui A pointer to the gui for the client
+ *@return a boolean indicating the success of the function
+ */
+static gboolean button_press_event_cb (GtkWidget *widget, GdkEventButton *event, Gui *gui); 
+
+/**
+ *Callback function that repsonds to a mouse release
+ *@param widget A reference to the widget that triggered the callback
+ *@param event A reference to the mouse event
+ *@param gui A pointer to the gui for the client
+ *@return a boolean indicating the success of the function
+ */
+static gboolean button_release_event_cb (GtkWidget *widget, GdkEventButton *event, Gui *gui);
+
+/**
+ *Callback function that repsonds to a mouse drag
+ *@param widget A reference to the widget that triggered the callback
+ *@param event A reference to the mouse event
+ *@param gui A pointer to the gui for the client
+ *@return a boolean indicating the success of the function
+ */
+static gboolean motion_notify_event_cb(GtkWidget *widget, GdkEventMotion *event, Gui *gui);
+
+/**
+ *Callback function that loadreps
+ *@param widget A reference to the widget that triggered the callback
+ *@param event A reference to the mouse event
+ *@param gui A pointer to the gui for the client
+ *@return a boolean indicating the success of the function
+ */
+static gboolean load_cb(GtkWidget *widget, Gui *gui);
+
+/**
+ *Callback function that intiates and processes server select dialog
+ *@param widget A reference to the widget that initiated the callback
+ *@param gui A reference to the gui for the client
+ *@return a boolean indicating the success of the function
+ */
+static gboolean select_cb(GtkWidget *widget, Gui *gui);
+
+/**
+ *Callback function from the color menu that changes the color to red
+ *@param widget a pointer to the widget that triggered the callback
+ *@param gui a pointer to the gui for the client
+ *@return a boolean indicating the success of the function
+ */
+static gboolean red_cb(GtkWidget *widget, Gui *gui);
+
+/**
+ *Callback function from the color menu that changes the color to green
+ *@param widget a pointer to the widget that triggered the callback
+ *@param gui a pointer to the gui for the client
+ *@return a boolean indicating the success of the function
+ */
+static gboolean green_cb(GtkWidget *widget, Gui *gui);
+
+/**
+ *Callback function from the color menu that changes the color to blue
+ *@param widget a pointer to the widget that triggered the callback
+ *@param gui a pointer to the gui for the client
+ *@return a boolean indicating the success of the function
+ */
+static gboolean blue_cb(GtkWidget *widget, Gui *gui);
+
+/**
+ *Callback function from the color menu that changes the color to black
+ *@param widget a pointer to the widget that triggered the callback
+ *@param gui a pointer to the gui for the client
+ *@return a boolean indicating the success of the function
+ */
+static gboolean black_cb(GtkWidget *widget, Gui *gui);
+
+/**
+ *Callback function from the color menu that changes the color to random
+ *@param widget a pointer to the widget that triggered the callback
+ *@param gui a pointer to the gui for the client
+ *@return a boolean indicating the success of the function
+ */
+static gboolean random_cb(GtkWidget *widget, Gui *gui);
+
+/**
+ *Helper function that scales into world coordinates
+ *@param x An integer to be scaled down
+ *@return a float in world coordinates
+ */
+static double scaling(int x);
+
+<<<<<<< .mine
+Gui *load_from_array(Gui *gui, int *dec, int len, int flag);
+static Gui *load_new_seg(Gui *gui, double x1, double y1, double x2, double y2);
+static Gui *load_new_static(Gui *gui, double x1, double y1, double x2, double y2);
+
+=======
+static Gui *load_new_static(Gui *gui, double x1, double y1, double x2, double y2);
+Gui *load_from_array(Gui *gui, int *dec, int len, int flag);
+
+>>>>>>> .r6211
+int main (int argc, char *argv[]){
+  //Make the gui and initialize
+  Gui *gui = (Gui *)malloc(sizeof(Gui));
+  
+  if (gui == NULL){
+    fprintf(stderr, "gui: Unable to allocated memory for gui\n");
+    return -1;
+  }
+
+  //initializing the gui
+  gui->space = cpSpaceNew();
+  gui->current_body = NULL;
+  gui->current_color = BLACK;
+  (gui->buff)[0]= '\0';
+  gui->sockfd = -1;
+  pthread_mutex_init(&(gui->buffer_mutex), NULL);
+  
+  //initialize the space
+  cpSpaceSetGravity(gui->space, cpv(0, GRAVITY));
+  cpEnableSegmentToSegmentCollisions();
+
+  gtk_init(&argc, &argv); 
+  
+  //initialize window and window components
+  if (!initialize_window(gui)){
+    fprintf(stderr, "gui: Failed to initialize the client\n");
+    return -1;
+  }
+  
+  //create the thread
+  pthread_t t1;
+  int iret1 = pthread_create(&t1, NULL, client_recv1, gui);
+  if (iret1 != 0){
+    fprintf(stderr, "gui: Failed to create thread\n");
+  }
+
+  //run gtk
+  gtk_main();
+  
+  //when gtk_main quits, free all memory
+  free_memory(gui);
+
+  return EXIT_SUCCESS;
+}
+
+static gboolean initialize_window(Gui *gui){
+  //making the window
+  gui->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title(GTK_WINDOW(gui->window), "Crayon Physics A++");
+  gtk_window_set_default_size(GTK_WINDOW(gui->window), WINDOW_WIDTH, WINDOW_HEIGHT);
+  gtk_window_set_position(GTK_WINDOW(gui->window), GTK_WIN_POS_CENTER);
+  
+  //making the grid to go in the window
+  GtkWidget *grid;
+  grid = gtk_grid_new();
+  gtk_container_add(GTK_CONTAINER(gui->window), grid);
+  
+  //make the menu
+  initialize_menu(grid, gui);
+  
+  //initializing the draw area
+  gui->draw_area = gtk_drawing_area_new();
+  initialize_draw_area(grid, gui->draw_area);
+  
+  //initialize the text entry box
+  gui->entry = gtk_entry_new();
+  initialize_text_entry(grid, gui);
+
+  //initialize the text view
+  gui->text_view = gtk_text_view_new();
+  initialize_text_view(grid, gui);
+
+  //shapes and bodies for testing
+  gtk_widget_show_all(gui->window);
+ 
+  //add events and connect signals
+  gtk_widget_add_events(gui->draw_area, GDK_BUTTON_PRESS_MASK);
+  
+  if (!connect_signals(gui)){
+    fprintf(stderr, "gui: Failed to connect signals\n");
+  }
+  
+  return TRUE;
+}
+
+//initializes the client communication
+static int initialize_client(Gui *gui, const char *server, int port_num){
+  //get the file descriptor
+  gui->sockfd = client_socket_connect(server, port_num);
+  
+  return gui->sockfd;
+}
+
+static gboolean initialize_menu(GtkWidget *grid, Gui *gui){
+ //making the menu bar
+  GtkWidget *menu_box;
+  menu_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+  gtk_grid_attach(GTK_GRID(grid), menu_box, 0, 0, 1, 1);
+
+  //Making the menu bar
+  GtkWidget *menu_bar;
+  GtkWidget *file_menu, *level_menu, *server_menu, *color_menu;
+  
+  //tabs for file menu
+  GtkWidget *file, *quit;
+
+  //tabs for level menu
+  GtkWidget *level, *load;
+
+  //Tabs for server menu
+  GtkWidget *server, *select;
+
+  //tabs for color menu
+  GtkWidget *color, *red, *green, *blue, *black, *random;
+
+  //making the menubar and the filemenu
+  menu_bar = gtk_menu_bar_new();
+  file_menu = gtk_menu_new();
+  level_menu = gtk_menu_new();
+  server_menu = gtk_menu_new();
+  color_menu = gtk_menu_new();
+
+  //Making the menu items for file
+  file = gtk_menu_item_new_with_label("File");
+  quit = gtk_menu_item_new_with_label("Quit");
+
+  //Making the menu items for level
+  level = gtk_menu_item_new_with_label("Level");
+  load = gtk_menu_item_new_with_label("Load");
+
+  //Making the menu items for server
+  server = gtk_menu_item_new_with_label("Server");
+  select = gtk_menu_item_new_with_label("Select Server");
+
+  //Making the menu items for color
+  color = gtk_menu_item_new_with_label("Color");
+  red = gtk_menu_item_new_with_label("Red");
+  green = gtk_menu_item_new_with_label("Green");
+  blue = gtk_menu_item_new_with_label("Blue");
+  black = gtk_menu_item_new_with_label("Black");
+  random = gtk_menu_item_new_with_label("Random");
+  
+  //setting up submenus
+  gtk_menu_item_set_submenu(GTK_MENU_ITEM(file), file_menu);
+  gtk_menu_item_set_submenu(GTK_MENU_ITEM(level), level_menu);
+  gtk_menu_item_set_submenu(GTK_MENU_ITEM(server), server_menu);
+  gtk_menu_item_set_submenu(GTK_MENU_ITEM(color), color_menu);
+
+  //appending submenus
+  gtk_menu_shell_append(GTK_MENU_SHELL(file_menu), quit);
+  gtk_menu_shell_append(GTK_MENU_SHELL(level_menu), load);
+  gtk_menu_shell_append(GTK_MENU_SHELL(server_menu), select);
+  gtk_menu_shell_append(GTK_MENU_SHELL(color_menu), red);
+  gtk_menu_shell_append(GTK_MENU_SHELL(color_menu), green);
+  gtk_menu_shell_append(GTK_MENU_SHELL(color_menu), blue);
+  gtk_menu_shell_append(GTK_MENU_SHELL(color_menu), black);
+  gtk_menu_shell_append(GTK_MENU_SHELL(color_menu), random);
+
+  //appending menus to menu_bar
+  gtk_menu_shell_append(GTK_MENU_SHELL(menu_bar), file);
+  gtk_menu_shell_append(GTK_MENU_SHELL(menu_bar), level);
+  gtk_menu_shell_append(GTK_MENU_SHELL(menu_bar), server);
+  gtk_menu_shell_append(GTK_MENU_SHELL(menu_bar), color);
+
+  //packing menu_bar into the menu box
+  gtk_box_pack_start(GTK_BOX(menu_box), menu_bar, FALSE, FALSE, 0);
+  
+  //connecting signals
+  g_signal_connect(G_OBJECT(quit), "activate", G_CALLBACK(gtk_main_quit), NULL);
+  g_signal_connect(G_OBJECT(load), "activate", G_CALLBACK(load_cb), gui);   
+  g_signal_connect(G_OBJECT(select), "activate", G_CALLBACK(select_cb), gui);
+  g_signal_connect(G_OBJECT(red), "activate", G_CALLBACK(red_cb), gui);
+  g_signal_connect(G_OBJECT(green), "activate", G_CALLBACK(green_cb), gui);
+  g_signal_connect(G_OBJECT(blue), "activate", G_CALLBACK(blue_cb), gui);
+  g_signal_connect(G_OBJECT(black), "activate", G_CALLBACK(black_cb), gui);
+  g_signal_connect(G_OBJECT(random), "activate", G_CALLBACK(random_cb), gui);
+  
+  return TRUE;
+}
+
+static gboolean initialize_draw_area(GtkWidget *grid, GtkWidget *draw_area){
+  GtkWidget *frame;
+    
+  //making a frame to hold the draw area
+  frame = gtk_frame_new(NULL);
+  gtk_grid_attach(GTK_GRID(grid), frame, 0, 1, 1, 1);
+
+  //making the drawing area
+  gtk_widget_set_size_request (draw_area, WINDOW_WIDTH, WINDOW_HEIGHT);
+  gtk_container_add(GTK_CONTAINER(frame), draw_area);
+  
+  gtk_widget_set_events (draw_area, gtk_widget_get_events (draw_area)| GDK_BUTTON_PRESS_MASK|GDK_POINTER_MOTION_MASK|GDK_BUTTON_RELEASE_MASK);
+
+
+  return TRUE;
+}
+
+static gboolean initialize_text_entry(GtkWidget *grid, Gui *gui){
+  //make the box to pack the button and entry in
+  GtkWidget *hbox, *button;
+  hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+  button = gtk_button_new_with_label("Send");
+
+  //connect button signal
+  g_signal_connect(button, "clicked", G_CALLBACK(send_cb), gui);
+
+  //pack the entry and button into the box
+  gtk_box_pack_start(GTK_BOX(hbox), gui->entry, TRUE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
+
+  //pack the box into the grid
+  gtk_grid_attach(GTK_GRID(grid), hbox, 1, 2, 1, 1);
+
+  return TRUE;
+}
+
+static gboolean initialize_text_view(GtkWidget *grid, Gui *gui){
+  //construct the box to put the text view in
+  GtkWidget *scrolled_window;
+  scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW(scrolled_window), GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);  
+  gtk_widget_set_size_request(scrolled_window, 260, WINDOW_HEIGHT);
+  gtk_widget_set_size_request(gui->text_view, 250, WINDOW_HEIGHT);
+
+  //don't show cursor and don't allow user to edit the text
+  gtk_text_view_set_editable(GTK_TEXT_VIEW(gui->text_view), FALSE);
+  gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(gui->text_view), FALSE);
+  gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(gui->text_view), GTK_WRAP_WORD_CHAR);
+  
+  //set header
+  GtkTextBuffer *buff = gtk_text_view_get_buffer(GTK_TEXT_VIEW(gui->text_view));
+  const gchar *header = "<CRAYON PHYSICS A++> Welcome to Crayon Physics A++!\n>This is a game that allows you to interactively draw shapes to complete a goal. Good luck and have fun.\n";
+  
+  
+  //set the buffer text header
+  gtk_text_buffer_set_text(buff, header, -1);
+  
+  //snap the text view and box into the grid
+  gtk_container_add(GTK_CONTAINER(scrolled_window), gui->text_view);
+  //gtk_box_pack_start(GTK_BOX(box), gui->text_view, TRUE, TRUE, 0);
+  gtk_grid_attach(GTK_GRID(grid), scrolled_window, 1, 1, 1, 1);
+  
+  return TRUE;
+}
+
+static gboolean add_to_text(Gui *gui, gchar *s){
+  //get the iterator and buffer
+  GtkTextIter iter;
+  GtkTextBuffer *buff = gtk_text_view_get_buffer(GTK_TEXT_VIEW(gui->text_view));
+  
+  //add the string to the end of the buffer
+  const gchar *string_to_add = s;
+  gtk_text_buffer_get_end_iter(buff, &iter); //sets iterator to the end of the buffer
+  gtk_text_buffer_insert(buff, &iter, string_to_add, -1);
+  
+  return TRUE;
+}
+  
+static gboolean connect_signals(Gui *gui){
+  //connecting signals for X and menu choices
+  g_signal_connect(G_OBJECT(gui->window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+
+  /* Signals used to handle the backing surface */
+  g_signal_connect (gui->draw_area, "draw", G_CALLBACK (draw_cb), gui);
+
+  //Sets up timer
+  g_timeout_add(1000*TIMESTEP, (GSourceFunc) time_handler, (gpointer) gui);
+
+  //mouse click event
+  g_signal_connect (gui->draw_area, "button-press-event", G_CALLBACK (button_press_event_cb), gui);
+
+  //mouse release event
+  g_signal_connect (gui->draw_area, "button-release-event", G_CALLBACK (button_release_event_cb), gui);
+
+   //mouse drag event
+   g_signal_connect (gui->draw_area, "motion-notify-event", G_CALLBACK (motion_notify_event_cb), gui);
+
+  return TRUE;
+}
+
+static gboolean send_cb(GtkWidget *widget, Gui *gui){
+  //get text from entry
+  const char *text = gtk_entry_get_text(GTK_ENTRY(gui->entry));
+
+  //add_to_text(gui, text);
+  client_send(gui->sockfd, text);
+
+  //clear the text entry box
+  const char *clear = "";
+  gtk_entry_set_text(GTK_ENTRY(gui->entry), clear);
+
+  return TRUE;
+}
+
+static gboolean load_cb(GtkWidget *widget, Gui *gui){
+  fprintf(stdout, "Load called\n");
+  fflush(stdout);  
+
+  //open up the file entry dialog
+  GtkWidget *dialog;
+  char *filename;
+
+  dialog = gtk_file_chooser_dialog_new("Level Chooser", GTK_WINDOW(gui->window), GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
+  
+  //if the user selects a file, get the filename
+  if(gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT){
+	filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+	fprintf(stdout, "%s\n", filename);
+	fflush(stdout);
+	 //call level load using the filename
+	level_load(gui->space, filename);
+  }
+
+  //destroy the file chooser
+  gtk_widget_destroy(dialog);
+
+  return TRUE;
+}
+
+static gboolean select_cb(GtkWidget *widget, Gui *gui){
+  Server *serv = (Server *)malloc(sizeof(Server));
+  serv->gui = gui;
+
+  //Making the pop up menu
+  GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title(GTK_WINDOW(window), "Server Select Menu");
+  gtk_window_set_default_size(GTK_WINDOW(window), 200, 125);
+  gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+  gtk_container_set_border_width(GTK_CONTAINER(window), 25);
+
+  //Make boxes to hold text entry and buttons
+  GtkWidget *box_for_server, *box_for_port, *box_for_buttons, *box;
+  box_for_server = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+  box_for_port = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+  box_for_buttons = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+  box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 2);
+
+  //Make text entry for server
+  GtkWidget *server_label = gtk_label_new("Server");
+  serv->server_entry = gtk_entry_new();
+  gtk_entry_set_text(GTK_ENTRY(serv->server_entry), "129.170.214.213");
+  gtk_box_pack_start(GTK_BOX(box_for_server), server_label, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(box_for_server), serv->server_entry, TRUE, TRUE, 0);
+
+  //Make text entry for port
+  GtkWidget *port_label = gtk_label_new("Port");
+  serv->port_entry = gtk_entry_new();
+  gtk_entry_set_text(GTK_ENTRY(serv->port_entry), "5993");
+  gtk_box_pack_start(GTK_BOX(box_for_port), port_label, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(box_for_port), serv->port_entry, TRUE, TRUE, 0);
+
+  //Make a button
+  GtkWidget *ok, *close;
+  ok = gtk_button_new_with_label("Ok");
+  close = gtk_button_new_with_label("Close");
+  gtk_box_pack_start(GTK_BOX(box_for_buttons), ok, TRUE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(box_for_buttons), close, TRUE, TRUE, 0);
+
+  //connect button signal
+  g_signal_connect(ok, "clicked", G_CALLBACK(server_update_cb), serv);
+  g_signal_connect(close, "clicked", G_CALLBACK(close_select_cb), window);
+
+  //pack into the main box
+  gtk_box_pack_start(GTK_BOX(box), box_for_server, TRUE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(box), box_for_port, TRUE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(box), box_for_buttons, TRUE, TRUE, 0);
+
+  //add the final box to the window
+  gtk_container_add(GTK_CONTAINER(window), box);
+  
+  //show
+  gtk_widget_show_all(window);
+
+  return TRUE;
+}
+
+static gboolean server_update_cb(GtkWidget *widget, Server *serv){
+  const char *server = gtk_entry_get_text(GTK_ENTRY(serv->server_entry));
+  const char *port = gtk_entry_get_text(GTK_ENTRY(serv->port_entry));
+  
+  int port_num = atoi(port);
+  serv->gui->sockfd = initialize_client(serv->gui, server, port_num);
+  
+  //if a valid connection was made alert user and return true
+  if (serv->gui->sockfd != -1){
+    gchar *new_tab = "<CRAYON PHYSICS A++> ";
+    add_to_text(serv->gui, new_tab);
+    
+    gchar message[72];
+    sprintf(message, "You connected to server the server: %s and the port %s!", server, port);
+    add_to_text(serv->gui, message);
+    
+    gchar *new_line = "\n";
+    add_to_text(serv->gui, new_line); 
+    
+    return TRUE;
+  }else{  
+    gchar message[95];
+    sprintf(message, "<CRAYON PHYSICS A++> You did not connect to server the server: %s and the port %s!\n", server, port);
+    add_to_text(serv->gui, message);
+
+    return FALSE;
+  }
+}
+
+static gboolean close_select_cb(GtkWidget *widget, GtkWidget *window){
+  gtk_widget_destroy(window);
+
+  return TRUE;
+}
+
+static gboolean draw_cb(GtkWidget *draw_area, cairo_t *cr, Gui *gui){
+  //get a cairo instance
+  cr = gdk_cairo_create(gtk_widget_get_window(draw_area));
+  
+  //clear the surface
+  cairo_set_source_rgb (cr, 255, 255, 255);
+  cairo_paint (cr);
+  
+  //draw space  
+  graphics_space_display(gui->draw_area, cr, gui->space, gui->current_body);
+  
+  //destroy the cairo instance
+  cairo_destroy(cr);
+  
+  return FALSE;
+}
+
+static gboolean time_handler(Gui *gui){
+  //step through physics and request redraw
+  gtk_widget_queue_draw(gui->window);
+  cpSpaceStep(gui->space, TIMESTEP);
+
+  pthread_mutex_lock(&((gui)->buffer_mutex));
+  if (gui->buff[0] != '\0'){
+<<<<<<< .mine
+    
+    if (gui->buff[0] <= 0){
+      int length, flag;
+      char *p = client_decode_helper(gui->buff, &length, &flag);
+=======
+    if (gui->buff[0] < 0){
+      printf("trying to decode\n");
+      int length, flag;
+      char *p = client_decode_helper(gui->buff, &length, &flag);
+>>>>>>> .r6211
+      int rec [ length - 1 ];
+<<<<<<< .mine
+      
+      int nints = client_decode(rec, p);
+      
+      gui = load_from_array(gui, rec, length);
+      
+      //add_to_text(gui, gui->buff);
+      
+=======
+      printf("length = %d, flag = %d\n", length, flag);
+      client_decode(rec, p);
+      printf("decoded\n");
+      gui = load_from_array(gui, rec, length, flag);
+      printf("loaded\n");
+>>>>>>> .r6211
+      gui->buff[0] = '\0';
+    }
+    else {
+      
+      gchar *new_tab = "> ";
+      add_to_text(gui, new_tab);
+      
+      add_to_text(gui, gui->buff);
+      
+      gchar *new_line = "\n";
+      add_to_text(gui, new_line);    
+      
+      gui->buff[0] = '\0'; 
+    }
+  }
+  pthread_mutex_unlock(&((gui)->buffer_mutex));
+
+  return TRUE;
+}
+
+static gboolean button_press_event_cb (GtkWidget *widget, GdkEventButton *event, Gui *gui){
+  //only if left clicked
+  if (event->button == 1) { 
+    //get the coordinates of the mouse click converted into world coordinates
+    float x = (float)event->x / (float)PIXELS_PER_METER;
+    float y = (float)(-event->y + WINDOW_HEIGHT) / (float)PIXELS_PER_METER ;
+    
+    //Making new body
+    gui->current_body = drawing_new((cpFloat) x, (cpFloat) y, 0);
+ }
+ 
+
+  return TRUE;
+}
+
+static gboolean button_release_event_cb (GtkWidget *widget, GdkEventButton *event, Gui *gui){
+  //only if the left click is released
+  if (event->button == 1){
+    drawing_activate(gui->space, gui->current_body, gui->current_color);
+    gui->current_body = NULL;
+  }
+  
+  return TRUE;
+}
+
+static gboolean motion_notify_event_cb(GtkWidget *widget, GdkEventMotion *event, Gui *gui){
+  //only add to the body if it is not NULL
+  if ((event->state && GDK_BUTTON1_MASK) && (gui->current_body != NULL)){
+    float x = (float)event->x / (float)PIXELS_PER_METER;
+    float y = (float)(-event->y + WINDOW_HEIGHT) / (float)PIXELS_PER_METER ;
+    
+    gui->current_body = drawing_update(gui->space, gui->current_body, x, y);
+  }	
+  
+  return TRUE;
+}
+
+static gboolean red_cb(GtkWidget *widget, Gui *gui){
+  gui->current_color = RED;
+
+  return TRUE;
+}
+
+static gboolean green_cb(GtkWidget *widget, Gui *gui){
+  gui->current_color = GREEN;
+
+  return TRUE;
+}
+
+static gboolean blue_cb(GtkWidget *widget, Gui *gui){
+  gui->current_color = BLUE;
+
+  return TRUE;
+}
+
+static gboolean black_cb(GtkWidget *widget, Gui *gui){
+  gui->current_color = BLACK;
+  
+  return TRUE;
+}
+
+static gboolean random_cb(GtkWidget *widget, Gui *gui){
+  gui->current_color = RANDOM;
+  
+  return TRUE;
+}
+
+void *client_recv1(void *gui){
+  while(1){
+    char buff[256];
+    int bytes = client_recv(((Gui*)gui)->sockfd, buff);
+    buff[bytes] = '\0';
+    
+    pthread_mutex_lock(&((Gui *)gui)->buffer_mutex);
+    strcpy(((Gui *)gui)->buff, buff);
+    pthread_mutex_unlock(&((Gui *)gui)->buffer_mutex);
+    
+    sleep(1);
+  }
+
+  return NULL;
+}
+
+static Gui *load_new_static(Gui *gui, double x1, double y1, double x2, double y2) {
+  
+<<<<<<< .mine
+  cpShape *newsh = cpSegmentShapeNew(gui->space->staticBody, cpv(x1, y1), cpv(x2, y2), CRAYON_RADIUS));
+  cpSpaceAddStaticShape(gui->space, newsh);
+  cpShapeSetFriction(newsh, 0.5);
+  cpShapeSetElasticity(newsh, .90);
+=======
+  cpShape *newsh = cpSpaceAddStaticShape(gui->space, cpSegmentShapeNew(gui->space->staticBody,
+                                                                     cpv(x1, y1),
+                                                                     cpv(x2, y2),
+                                                                     CRAYON_RADIUS));
+>>>>>>> .r6211
+  
+  return gui;
+}
+
+static Gui *load_new_seg(Gui *gui, double x1, double y1, double x2, double y2) {
+  
+  cpShape *newsh = cpSegmentShapeNew(gui->current_body, cpv(x1, y1), cpv(x2, y2), CRAYON_RADIUS));
+  cpSpaceAddStaticShape(gui->space, newsh);
+  cpShapeSetFriction(newsh, 0.5);
+  cpShapeSetElasticity(newsh, .90);
+  
+  return gui;
+}
+
+<<<<<<< .mine
+Gui *load_from_array(Gui *gui, int *dec, int len, int flag) {
+=======
+
+Gui *load_from_array(Gui *gui, int *dec, int len, int flag) {
+>>>>>>> .r6211
+  
+  if (flag == -128) {
+    
+    for (int i = 0; i < len - 3; i += 4) {
+      gui = load_new_static(gui, scaling(dec[i]), scaling(dec[i + 1]), scaling(dec[i + 2]), scaling(dec[i + 3]));
+    }
+  }
+  
+<<<<<<< .mine
+  if (flag == -121) {
+    gui->current_body = drawing_new(scaling(dec[0]), scaling(dec[1]), 0);
+    
+    for (int i = 2; i < len - 1; i += 2) {
+      gui->current_body = drawing_update(gui->space, gui->current_body, scaling(dec[i]), scaling(dec[i + 1]));
+    }
+    
+    drawing_activate(gui->space, gui->current_body, gui->current_color);
+    gui->current_body = NULL;
+    printf("activated body");
+  }
+  
+=======
+  if (flag == -121) {
+    gui->current_body = drawing_new(scaling(dec[0]), scaling(dec[1]), 0);
+    
+    for (int i = 2; i < len - 1; i += 2) {
+      gui->current_body = drawing_update(gui->space, gui->current_body, scaling(dec[i]), scaling(dec[i + 1]));
+    }
+    
+    drawing_activate(gui->space, gui->current_body, gui->current_color);
+    gui->current_body = NULL;
+    printf("activated body");
+
+  }
+  
+>>>>>>> .r6211
+  return gui;
+}
+
+static double scaling(int x) {
+  return (double) ((double)x / (double)PIXELS_PER_METER);
+}
+
+
+void free_memory(Gui *gui){
+  gtk_widget_destroy((gui->text_view));
+  gtk_widget_destroy((gui->entry));
+  gtk_widget_destroy((gui->draw_area));
+  gtk_widget_destroy((gui->window));
+  
+  while (gui->mark){
+    g_object_unref(G_OBJECT(gui->mark));
+  }
+  
+  cpBodyFree(gui->current_body);
+  cpSpaceFree(gui->space);
+  free(gui);
+}

@@ -1,0 +1,81 @@
+.TH "gui/gui.h" 3 "Fri Mar 1 2013" "Crayon Physics A++" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+gui/gui.h \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <gtk/gtk\&.h>\fP
+.br
+\fC#include <chipmunk/chipmunk\&.h>\fP
+.br
+\fC#include '\&.\&./graphics/graphics\&.h'\fP
+.br
+\fC#include '\&.\&./core/core\&.h'\fP
+.br
+\fC#include '\&.\&./core/level\&.h'\fP
+.br
+
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fBgui\fP"
+.br
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBWINDOW_WIDTH\fP   750"
+.br
+.ti -1c
+.RI "#define \fBWINDOW_HEIGHT\fP   500"
+.br
+.ti -1c
+.RI "#define \fBTIMESTEP\fP   1\&.0/60\&.0"
+.br
+.ti -1c
+.RI "#define \fBPIXELS_PER_METER\fP   100"
+.br
+.ti -1c
+.RI "#define \fBGRAVITY\fP   -10"
+.br
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef struct \fBgui\fP \fBGui\fP"
+.br
+.in -1c
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define GRAVITY   -10"
+
+.PP
+Definition at line 14 of file gui\&.h\&.
+.SS "#define PIXELS_PER_METER   100"
+
+.PP
+Definition at line 13 of file gui\&.h\&.
+.SS "#define TIMESTEP   1\&.0/60\&.0"
+
+.PP
+Definition at line 12 of file gui\&.h\&.
+.SS "#define WINDOW_HEIGHT   500"
+
+.PP
+Definition at line 11 of file gui\&.h\&.
+.SS "#define WINDOW_WIDTH   750"
+
+.PP
+Definition at line 10 of file gui\&.h\&.
+.SH "Typedef Documentation"
+.PP 
+.SS "typedef struct \fBgui\fP \fBGui\fP"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Crayon Physics A++ from the source code\&.

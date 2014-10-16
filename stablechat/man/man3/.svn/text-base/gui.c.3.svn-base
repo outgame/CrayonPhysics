@@ -1,0 +1,150 @@
+.TH "gui/gui.c" 3 "Fri Mar 1 2013" "Crayon Physics A++" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+gui/gui.c \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'gui\&.h'\fP
+.br
+\fC#include '\&.\&./core/client\&.h'\fP
+.br
+\fC#include <pthread\&.h>\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "int \fBinitialize_window\fP (\fBGui\fP *\fBgui\fP)"
+.br
+.ti -1c
+.RI "int \fBinitialize_menu\fP (GtkWidget *grid, \fBGui\fP *\fBgui\fP)"
+.br
+.ti -1c
+.RI "int \fBinitialize_draw_area\fP (GtkWidget *grid, GtkWidget *draw_area)"
+.br
+.ti -1c
+.RI "int \fBinitialize_text_entry\fP (GtkWidget *grid, \fBGui\fP *\fBgui\fP)"
+.br
+.ti -1c
+.RI "int \fBinitialize_text_view\fP (GtkWidget *grid, \fBGui\fP *\fBgui\fP)"
+.br
+.ti -1c
+.RI "int \fBinitialize_client\fP (\fBGui\fP *\fBgui\fP)"
+.br
+.ti -1c
+.RI "void * \fBclient_recv1\fP (void *ptr)"
+.br
+.ti -1c
+.RI "int \fBadd_to_text\fP (\fBGui\fP *\fBgui\fP, gchar *s)"
+.br
+.ti -1c
+.RI "int \fBconnect_signals\fP (\fBGui\fP *\fBgui\fP)"
+.br
+.ti -1c
+.RI "static gboolean \fBsend_cb\fP (GtkWidget *widget, \fBGui\fP *\fBgui\fP)"
+.br
+.ti -1c
+.RI "static gboolean \fBdraw_cb\fP (GtkWidget *draw_area, cairo_t *cr, \fBGui\fP *\fBgui\fP)"
+.br
+.ti -1c
+.RI "static gboolean \fBtime_handler\fP (\fBGui\fP *\fBgui\fP)"
+.br
+.ti -1c
+.RI "static gboolean \fBbutton_press_event_cb\fP (GtkWidget *widget, GdkEventButton *event, \fBGui\fP *\fBgui\fP)"
+.br
+.ti -1c
+.RI "static gboolean \fBbutton_release_event_cb\fP (GtkWidget *widget, GdkEventButton *event, \fBGui\fP *\fBgui\fP)"
+.br
+.ti -1c
+.RI "static gboolean \fBmotion_notify_event_cb\fP (GtkWidget *widget, GdkEventMotion *event, \fBGui\fP *\fBgui\fP)"
+.br
+.ti -1c
+.RI "static gboolean \fBload_cb\fP (\fBGui\fP *\fBgui\fP)"
+.br
+.ti -1c
+.RI "static gboolean \fBselect_cb\fP (void)"
+.br
+.ti -1c
+.RI "int \fBmain\fP (int argc, char *argv[])"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "int add_to_text (\fBGui\fP *gui, gchar *s)"
+
+.PP
+Definition at line 236 of file gui\&.c\&.
+.SS "static gboolean button_press_event_cb (GtkWidget *widget, GdkEventButton *event, \fBGui\fP *gui)\fC [static]\fP"
+
+.PP
+Definition at line 355 of file gui\&.c\&.
+.SS "static gboolean button_release_event_cb (GtkWidget *widget, GdkEventButton *event, \fBGui\fP *gui)\fC [static]\fP"
+
+.PP
+Definition at line 375 of file gui\&.c\&.
+.SS "void * client_recv1 (void *ptr)"
+
+.PP
+Definition at line 399 of file gui\&.c\&.
+.SS "int connect_signals (\fBGui\fP *gui)"
+
+.PP
+Definition at line 252 of file gui\&.c\&.
+.SS "static gboolean draw_cb (GtkWidget *draw_area, cairo_t *cr, \fBGui\fP *gui)\fC [static]\fP"
+
+.PP
+Definition at line 329 of file gui\&.c\&.
+.SS "int initialize_client (\fBGui\fP *gui)"
+
+.PP
+Definition at line 95 of file gui\&.c\&.
+.SS "int initialize_draw_area (GtkWidget *grid, GtkWidget *draw_area)"
+
+.PP
+Definition at line 173 of file gui\&.c\&.
+.SS "int initialize_menu (GtkWidget *grid, \fBGui\fP *gui)"
+
+.PP
+Definition at line 105 of file gui\&.c\&.
+.SS "int initialize_text_entry (GtkWidget *grid, \fBGui\fP *gui)"
+
+.PP
+Definition at line 190 of file gui\&.c\&.
+.SS "int initialize_text_view (GtkWidget *grid, \fBGui\fP *gui)"
+
+.PP
+Definition at line 209 of file gui\&.c\&.
+.SS "int initialize_window (\fBGui\fP *gui)"
+
+.PP
+Definition at line 46 of file gui\&.c\&.
+.SS "static gboolean load_cb (\fBGui\fP *gui)\fC [static]\fP"
+
+.PP
+Definition at line 297 of file gui\&.c\&.
+.SS "int main (intargc, char *argv[])"
+
+.PP
+Definition at line 23 of file gui\&.c\&.
+.SS "static gboolean motion_notify_event_cb (GtkWidget *widget, GdkEventMotion *event, \fBGui\fP *gui)\fC [static]\fP"
+
+.PP
+Definition at line 387 of file gui\&.c\&.
+.SS "static gboolean select_cb (void)\fC [static]\fP"
+
+.PP
+Definition at line 323 of file gui\&.c\&.
+.SS "static gboolean send_cb (GtkWidget *widget, \fBGui\fP *gui)\fC [static]\fP"
+
+.PP
+Definition at line 274 of file gui\&.c\&.
+.SS "static gboolean time_handler (\fBGui\fP *gui)\fC [static]\fP"
+
+.PP
+Definition at line 346 of file gui\&.c\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Crayon Physics A++ from the source code\&.
