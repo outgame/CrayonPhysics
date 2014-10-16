@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/classes/cs50-W13/!svn/ver/6209/team-3/release/StableRelease/gui
+END
+gui.c
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/classes/cs50-W13/!svn/ver/6237/team-3/release/StableRelease/gui/gui.c
+END
+gui.h
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/classes/cs50-W13/!svn/ver/6209/team-3/release/StableRelease/gui/gui.h
+END
+crayon_image.svg
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/classes/cs50-W13/!svn/ver/6209/team-3/release/StableRelease/gui/crayon_image.svg
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/classes/cs50-W13/!svn/ver/6209/team-3/release/StableRelease/gui/Makefile
+END

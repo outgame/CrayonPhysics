@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/classes/cs50-W13/!svn/ver/6209/team-3/release/StableRelease/core
+END
+client.c
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/classes/cs50-W13/!svn/ver/6280/team-3/release/StableRelease/core/client.c
+END
+physics.c
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/classes/cs50-W13/!svn/ver/6209/team-3/release/StableRelease/core/physics.c
+END
+client.h
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/classes/cs50-W13/!svn/ver/6280/team-3/release/StableRelease/core/client.h
+END
+server.c
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/classes/cs50-W13/!svn/ver/6280/team-3/release/StableRelease/core/server.c
+END
+level.c
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/classes/cs50-W13/!svn/ver/6209/team-3/release/StableRelease/core/level.c
+END
+physics.h
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/classes/cs50-W13/!svn/ver/6209/team-3/release/StableRelease/core/physics.h
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/classes/cs50-W13/!svn/ver/6280/team-3/release/StableRelease/core/Makefile
+END
+level.h
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/classes/cs50-W13/!svn/ver/6209/team-3/release/StableRelease/core/level.h
+END
