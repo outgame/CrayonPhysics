@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/classes/cs50-W13/!svn/ver/4071/team-3/stablesrc/gui
+END
+guiSandbox.c
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/classes/cs50-W13/!svn/ver/4071/team-3/stablesrc/gui/guiSandbox.c
+END
+gui.c
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/classes/cs50-W13/!svn/ver/4071/team-3/stablesrc/gui/gui.c
+END
+gui2.c
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/classes/cs50-W13/!svn/ver/4071/team-3/stablesrc/gui/gui2.c
+END
+gui.h
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/classes/cs50-W13/!svn/ver/4071/team-3/stablesrc/gui/gui.h
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/classes/cs50-W13/!svn/ver/4071/team-3/stablesrc/gui/Makefile
+END
