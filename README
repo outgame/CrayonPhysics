@@ -1,0 +1,21 @@
+Sam Farid, Sam Winters, Cam Orth
+Team 3 (A++) Crayon Physics
+
+To compile -
+    cd into the gui/ directory and make. This will compile all of the .o files needed for the client.
+    cd into core/ and make. This will compile the server.
+    
+To run -
+    In core/ run the server with ./server (this only needs to be done once)
+    In gui/ run the gui with ./gui and a window will pop up (this can be done in multiple shells or on different computers)
+
+To connect to server -
+    On the menu bar at the top of the gui, select server and in the pop up box, type in the address of the computer that is running the server (the address defaults to spruce.cs.dartmouth.edu with port number 5993. Even though the address may change depending on which computer is running the server, don't change the port number).
+    Do this on each of the guis. The level will automatically load when you connect to the server
+    
+To navigate the gui -
+    The menu bar at the top contains a drop down menu for file, level, server, and color. File is used to close the window. Level is not being used in this version of the game but could be used to load levels in the future. Server is described above. Color is the color selector to change the color of the shapes you draw (options are black, red, blue, green, and random).
+    The chat box on the right side will notify you when you connect to a server, and display the chat messages from the other players connected to the same server. Type into the text box at the bottom right of the window and hit "send" to send your message to the other players.
+
+To play the game!
+    Press and drag the mouse to create shapes. 
